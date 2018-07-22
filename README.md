@@ -33,9 +33,9 @@ We foresee that over time, a lot of new metrics will be added to our report and 
 
 Once you've made your change, add the following additional metrics:
 
-  - Marketing noticed that some of the comments are spam. Add a new total called **SPAM** to the report, which should count lines that contain a url to a web page.
-
   - Some customers use the comments section to ask questions. Add a new metric named **QUESTIONS** that displays a count of comments that contain one on more question marks "?"
+
+  - Marketing noticed that some of the comments are spam. Add a new total called **SPAM** to the report, which should count lines that contain a url to a web page.
  
 ##### 3. Concurrency
 
