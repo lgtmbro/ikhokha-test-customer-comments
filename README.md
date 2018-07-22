@@ -4,7 +4,7 @@
 ---
 ### Introduction
 
-At iKhokha, we love receiving feedback from our customers - especially when it's positive :) We would like to analyze our customer online reviews and comments and have asked the new graduate to write a Java Application that will run through all the comments and create a report with totals that will be used for business intelligence and marketing. 
+At iKhokha, we love receiving feedback from our customers - especially when it's positive :) We would like to analyze our customer online reviews and comments and the new graduate was tasked to write a Java Application that will run through all the comments and create a report with totals to be used for business intelligence and marketing. 
 
 We currently have three metrics that we keep track of:
 
@@ -20,7 +20,7 @@ The daily comments are stored in text files under the **docs** directory within 
 
 ---
 ### Tasks
-Complete the 3 tasks below. Be sure to read each one carefully and make your changes to the existing code provided in the project.
+Clone this repo and complete the 3 tasks below. Be sure to read each one carefully and make your changes to the existing code provided in the project. Once complete, you can upload it to your own repo and share the url. Alternatively you can zip it up and send via email. Good luck!
 
 ##### 1. Debugging and Logical problem solving
 
