@@ -27,15 +27,15 @@ public class CommentAnalyzer {
 				
 				if (line.length() < 15) {
 					
-					incOccurence(resultsMap, "SHORTER_THAN_15");
+					incOccurrence(resultsMap, "SHORTER_THAN_15");
 
 				} else if (line.contains("Mover")) {
 
-					incOccurence(resultsMap, "MOVER_MENTIONS");
+					incOccurrence(resultsMap, "MOVER_MENTIONS");
 				
 				} else if (line.contains("Shaker")) {
 
-					incOccurence(resultsMap, "SHAKER_MENTIONS");
+					incOccurrence(resultsMap, "SHAKER_MENTIONS");
 				
 				}
 			}
@@ -57,7 +57,7 @@ public class CommentAnalyzer {
 	 * @param countMap the map that keeps track of counts
 	 * @param key the key for the value to increment
 	 */
-	private void incOccurence(Map<String, Integer> countMap, String key) {
+	private void incOccurrence(Map<String, Integer> countMap, String key) {
 		
 		countMap.putIfAbsent(key, 0);
 		countMap.put(key, countMap.get(key) + 1);
