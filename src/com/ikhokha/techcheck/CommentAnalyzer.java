@@ -28,8 +28,6 @@ public class CommentAnalyzer {
 
 				line = line.toLowerCase();
 
-				// System.out.println(line);
-				
 				if (line.length() < 15) {
 					
 					incOccurrence(resultsMap, "SHORTER_THAN_15");
