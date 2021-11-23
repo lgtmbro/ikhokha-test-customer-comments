@@ -15,6 +15,8 @@ public class Main {
 		
 		for (File commentFile : commentFiles) {
 			CommentAnalyzer commentAnalyzer = new CommentAnalyzer(commentFile);
+			// added non standardized lettering for testing
+			System.out.println(commentAnalyzer.addMetricTerms("Mover,sHaker").toString());
 			Map<String, Integer> fileResults = commentAnalyzer.analyze();
 			addReportResults(fileResults, totalResults);
 		}
