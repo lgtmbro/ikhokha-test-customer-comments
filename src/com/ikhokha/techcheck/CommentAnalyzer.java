@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class CommentAnalyzer {
 	
@@ -29,31 +30,28 @@ public class CommentAnalyzer {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
 
-				// standardizing the input for better results
 				line = line.toLowerCase();
 
 				if (line.length() < 15) {
 					incOccurrence(resultsMap, "SHORTER_THAN_15");
-				} else {
-					for (String term : this.terms) {
-						// 	this code showed me that i perhaps messed up part 1
-						// 	there was a dicrepency in shaker counts because there was a else if branch here
-						// 	it did not account for the fact that users may talk about both products in the same sentence
-						if (line.contains(term)) {
-							incOccurrence(resultsMap, String.format("%s_MENTIONS", term.toUpperCase()));
-						}
-					}
 				}
 
-				// } else if (line.contains("mover")) {
-				// 	// System.out.println("mover");
-				// 	incOccurrence(resultsMap, "MOVER_MENTIONS");
-				
-				// } else if (line.contains("shaker")) {
+				if (line.contains("?")) {
+					incOccurrence(resultsMap, "QUESTIONS");
+				}
 
-				// 	incOccurrence(resultsMap, "SHAKER_MENTIONS");
-				
-				// }
+				Pattern urlPattern = Pattern.compile(
+					"\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]",
+					Pattern.CASE_INSENSITIVE);
+				if (urlPattern.matcher(line).find()) {
+					incOccurrence(resultsMap, "SPAM");
+				}
+
+				for (String term : this.terms) {
+					if (line.contains(term)) {
+						incOccurrence(resultsMap, String.format("%s_MENTIONS", term.toUpperCase()));
+					}
+				}
 			}
 			
 		} catch (FileNotFoundException e) {
