@@ -6,24 +6,29 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-public class CommentAnalyzer {
+public class CommentAnalyzer implements Runnable{
 	
 	private File file;
 	private List<String> terms;
-	
-	public CommentAnalyzer(File file) {
-		this.file = file;
-		this.terms = new ArrayList<String>();
+	public Map<String, Integer> result;
+
+	@Override
+	public void run() {
+		this.analyze();
 	}
 	
-	public Map<String, Integer> analyze() {
-		
-		Map<String, Integer> resultsMap = new HashMap<>();
+	public CommentAnalyzer(File file, String terms, Map<String, Integer> reportResults) {
+		this.file = file;
+		this.result = reportResults;
+		this.terms = new ArrayList<String>();
+		this.addKeywords(terms);
+	}
+	
+	public void analyze() {
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			
@@ -33,23 +38,23 @@ public class CommentAnalyzer {
 				line = line.toLowerCase();
 
 				if (line.length() < 15) {
-					incOccurrence(resultsMap, "SHORTER_THAN_15");
+					incOccurrence(this.result, "SHORTER_THAN_15");
 				}
 
 				if (line.contains("?")) {
-					incOccurrence(resultsMap, "QUESTIONS");
+					incOccurrence(this.result, "QUESTIONS");
 				}
 
 				Pattern urlPattern = Pattern.compile(
 					"\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]",
 					Pattern.CASE_INSENSITIVE);
 				if (urlPattern.matcher(line).find()) {
-					incOccurrence(resultsMap, "SPAM");
+					incOccurrence(this.result, "SPAM");
 				}
 
 				for (String term : this.terms) {
 					if (line.contains(term)) {
-						incOccurrence(resultsMap, String.format("%s_MENTIONS", term.toUpperCase()));
+						incOccurrence(this.result, String.format("%s_MENTIONS", term.toUpperCase()));
 					}
 				}
 			}
@@ -62,8 +67,6 @@ public class CommentAnalyzer {
 			e.printStackTrace();
 		}
 		
-		return resultsMap;
-		
 	}
 	
 	/**
@@ -72,7 +75,6 @@ public class CommentAnalyzer {
 	 * @param key the key for the value to increment
 	 */
 	private void incOccurrence(Map<String, Integer> countMap, String key) {
-		
 		countMap.putIfAbsent(key, 0);
 		countMap.put(key, countMap.get(key) + 1);
 	}
@@ -81,7 +83,7 @@ public class CommentAnalyzer {
 	 * This method allows us to add more keywords to filter in our report
 	 * @param terms string of terms split by a ","
 	 */
-	public List<String> addMetricTerms(String terms) {
+	public List<String> addKeywords(String terms) {
 		String[] termsArr = terms.split(",");
 		for (String newTerm : termsArr) {
 			newTerm = newTerm.toLowerCase();
