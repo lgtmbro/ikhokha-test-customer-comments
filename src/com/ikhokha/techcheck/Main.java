@@ -5,14 +5,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;  
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;  
 
 public class Main {
 	
 	public static void main(String[] args) {
-		List<Thread> threadsInUse = new ArrayList<Thread>();;
 		Map<String, Integer> results = new HashMap<String, Integer>();
-		int docsProcessed = 0;
-		int maxThreads = 3; //default unless provided as a --thread x param
+		int maxThreads = 5; //default unless provided as a --thread x param
 		String keywordsToFind = "ik pos,mover,shaker";
 
 		int argPos;
@@ -22,7 +24,10 @@ public class Main {
 			}
 		}
 
-		System.out.println(String.format("RUNNING REPORTS ON %s THREADS", maxThreads));
+		ExecutorService executor = Executors.newFixedThreadPool(maxThreads);
+		List<Future<Map<String, Integer>>> futures = new ArrayList<>();
+
+		System.out.println(String.format("RUNNING REPORTS ON %s THREAD(S)", maxThreads));
 				
 		File docPath = new File("docs");
 		File[] commentFiles = docPath.listFiles((d, n) -> n.endsWith(".txt"));
@@ -31,30 +36,41 @@ public class Main {
 
 		final long startTime = System.currentTimeMillis();
 		
-		while(docsProcessed != commentFiles.length) {
-			if (threadsInUse.size() < maxThreads) {
-				CommentAnalyzer commentAnalyzer = new CommentAnalyzer(commentFiles[docsProcessed], keywordsToFind, results);
-				threadsInUse.add(new Thread(commentAnalyzer));
-				threadsInUse.get(threadsInUse.size() - 1).start();
-				docsProcessed++;
-			}
-			
-			List<Thread> deadThreads = new ArrayList<Thread>();
-
-			for (Thread commentAnalyzerThread : threadsInUse) {
-				if (!commentAnalyzerThread.isAlive()) {
-					deadThreads.add(commentAnalyzerThread);
-				}
-			}
-
-			for (Thread deadThread : deadThreads) {
-				threadsInUse.remove(deadThread);
-			}
+		for (File commentFile: commentFiles){
+			Callable<Map<String, Integer>> commentAnalyzerWorker =  new CommentAnalyzer(commentFile, keywordsToFind);
+			futures.add(executor.submit(commentAnalyzerWorker));
 		}
+
+		executor.shutdown();
+
+		while (!executor.isTerminated()) { }
+
+		for (Future<Map<String, Integer>> future : futures) {
+			try {
+				Map<String, Integer> commentFileResults = future.get();
+				addReportResults(commentFileResults, results);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		 }
 		
 		System.out.println("RESULTS\n=======");
 		results.forEach((k,v) -> System.out.println(k + " : " + v));
 		System.out.println(String.format("Completed in %s ms", (System.currentTimeMillis() - startTime)));
+	}
+
+	/**
+	 * This method adds the result counts from a source map to the target map 
+	 * @param source the source map
+	 * @param target the target map
+	 */
+	private static void addReportResults(Map<String, Integer> source, Map<String, Integer> target) {
+
+		for (Map.Entry<String, Integer> entry : source.entrySet()) {
+			target.putIfAbsent(entry.getKey(), 0);
+			target.put(entry.getKey(), target.get(entry.getKey()) + entry.getValue());
+		}
+		
 	}
 
 }

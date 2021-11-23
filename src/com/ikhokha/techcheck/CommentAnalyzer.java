@@ -6,29 +6,31 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.regex.Pattern;
 
-public class CommentAnalyzer implements Runnable{
+public class CommentAnalyzer implements Callable<Map<String, Integer>>{
 	
 	private File file;
 	private List<String> terms;
-	public Map<String, Integer> result;
 
 	@Override
-	public void run() {
-		this.analyze();
+	public Map<String, Integer> call() {
+		return this.analyze();
 	}
 	
-	public CommentAnalyzer(File file, String terms, Map<String, Integer> reportResults) {
+	public CommentAnalyzer(File file, String terms) {
 		this.file = file;
-		this.result = reportResults;
 		this.terms = new ArrayList<String>();
 		this.addKeywords(terms);
 	}
 	
-	public void analyze() {
+	public Map<String, Integer> analyze() {
+
+		Map<String, Integer> resultsMap = new HashMap<>();
 		
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			
@@ -38,23 +40,23 @@ public class CommentAnalyzer implements Runnable{
 				line = line.toLowerCase();
 
 				if (line.length() < 15) {
-					incOccurrence(this.result, "SHORTER_THAN_15");
+					incOccurrence(resultsMap, "SHORTER_THAN_15");
 				}
 
 				if (line.contains("?")) {
-					incOccurrence(this.result, "QUESTIONS");
+					incOccurrence(resultsMap, "QUESTIONS");
 				}
 
 				Pattern urlPattern = Pattern.compile(
 					"\\b(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]",
 					Pattern.CASE_INSENSITIVE);
 				if (urlPattern.matcher(line).find()) {
-					incOccurrence(this.result, "SPAM");
+					incOccurrence(resultsMap, "SPAM");
 				}
 
 				for (String term : this.terms) {
 					if (line.contains(term)) {
-						incOccurrence(this.result, String.format("%s_MENTIONS", term.toUpperCase()));
+						incOccurrence(resultsMap, String.format("%s_MENTIONS", term.toUpperCase()));
 					}
 				}
 			}
@@ -66,6 +68,8 @@ public class CommentAnalyzer implements Runnable{
 			System.out.println("IO Error processing file: " + file.getAbsolutePath());
 			e.printStackTrace();
 		}
+
+		return resultsMap;
 		
 	}
 	
