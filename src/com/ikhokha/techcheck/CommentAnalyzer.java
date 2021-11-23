@@ -13,6 +13,7 @@ public class CommentAnalyzer {
 	private File file;
 	
 	public CommentAnalyzer(File file) {
+		System.out.println(file.toString());
 		this.file = file;
 	}
 	
@@ -24,16 +25,20 @@ public class CommentAnalyzer {
 			
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+
+				line = line.toLowerCase();
+
+				// System.out.println(line);
 				
 				if (line.length() < 15) {
 					
 					incOccurrence(resultsMap, "SHORTER_THAN_15");
 
-				} else if (line.contains("Mover")) {
-
+				} else if (line.contains("mover")) {
+					// System.out.println("mover");
 					incOccurrence(resultsMap, "MOVER_MENTIONS");
 				
-				} else if (line.contains("Shaker")) {
+				} else if (line.contains("shaker")) {
 
 					incOccurrence(resultsMap, "SHAKER_MENTIONS");
 				
