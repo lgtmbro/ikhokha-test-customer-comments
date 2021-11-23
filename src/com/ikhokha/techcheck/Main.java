@@ -14,7 +14,7 @@ public class Main {
 	
 	public static void main(String[] args) {
 		Map<String, Integer> results = new HashMap<String, Integer>();
-		int maxThreads = 5; //default unless provided as a --thread x param
+		int maxThreads = 2; //default unless provided as a --thread x param
 		String keywordsToFind = "ik pos,mover,shaker";
 
 		int argPos;
