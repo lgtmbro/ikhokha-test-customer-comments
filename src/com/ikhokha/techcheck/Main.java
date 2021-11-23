@@ -19,7 +19,7 @@ public class Main {
 
 		int argPos;
 		for(argPos = 0; argPos < args.length; argPos++) {
-            if(args[argPos].contains("--threads")) {
+			if(args[argPos].contains("--threads")) {
 				maxThreads = Integer.parseInt(args[argPos + 1]);
 			}
 		}
