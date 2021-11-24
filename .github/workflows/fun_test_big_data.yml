@@ -37,7 +37,7 @@ jobs:
 
       - name: Run Reports
         run: java -cp ./bin com.ikhokha.techcheck.Main \
-          --threads 5 \
+          --threads 1 \
           --keywords mover,shaker,loadshedding,#winWithShaker \
           > report.txt
 
