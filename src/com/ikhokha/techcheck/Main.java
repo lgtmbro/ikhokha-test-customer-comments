@@ -15,12 +15,16 @@ public class Main {
 	public static void main(String[] args) {
 		Map<String, Integer> results = new HashMap<String, Integer>();
 		int maxThreads = 2; // default unless provided as a --thread x cli arg
-		String keywordsToFind = "ik pos,mover,shaker";
+		String keywordsToFind = "ik pos,mover,shaker"; // default unless provided as a --keywords x cli arg
 
 		int argPos;
 		for(argPos = 0; argPos < args.length; argPos++) {
 			if(args[argPos].contains("--threads")) {
 				maxThreads = Integer.parseInt(args[argPos + 1]);
+			}
+
+			if(args[argPos].contains("--keywords")) {
+				keywordsToFind = args[argPos + 1];
 			}
 		}
 
