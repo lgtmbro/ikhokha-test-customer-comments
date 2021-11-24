@@ -1,0 +1,48 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [fun/testBigData]
+  pull_request:
+    branches: [fun/testBigData]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # init java
+      - name: Setup Java JDK
+        uses: actions/setup-java@v2.3.1
+        with:
+          java-version: "11"
+          distribution: "zulu"
+
+      - name: Compile Java Project
+        run: javac ./src/com/ikhokha/techcheck/*.java -d bin
+
+      - name: Run Reports
+        run: java -cp ./bin com.ikhokha.techcheck.Main \
+          --threads 1 \
+          --keywords mover,shaker,loadshedding,#winWithShaker \
+          > report.txt
+
+      - name: Archive report.txt for later use
+        uses: actions/upload-artifact@v2
+        with:
+          name: comments-report
+          path: report.txt
