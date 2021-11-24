@@ -32,8 +32,8 @@ jobs:
           java-version: "11"
           distribution: "zulu"
 
-      # Runs a single command using the runners shell
       - name: Compile Java Project
-        run: |
-          javac ./src/com/ikhokha/techcheck/*.java -d bin
-          ls
+        run: javac ./src/com/ikhokha/techcheck/*.java -d bin
+
+      - name: Run Reports
+        run: java -cp ./bin Main
