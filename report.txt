@@ -1,0 +1,5 @@
+README.md
+bin
+docs
+report.txt
+src

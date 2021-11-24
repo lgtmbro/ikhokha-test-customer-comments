@@ -38,4 +38,11 @@ jobs:
       - name: Run Reports
         run: java -cp ./bin com.ikhokha.techcheck.Main \
           --threads 5 \
-          --keywords mover,shaker,loadshedding,#winWithShaker
+          --keywords mover,shaker,loadshedding,#winWithShaker \
+          > report.txt
+
+      - name: Archive report.txt for later use
+        uses: actions/upload-artifact@v2
+        with:
+          name: comments-report
+          path: report.txt
