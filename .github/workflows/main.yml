@@ -36,4 +36,4 @@ jobs:
         run: javac ./src/com/ikhokha/techcheck/*.java -d bin
 
       - name: Run Reports
-        run: java -cp ./bin Main
+        run: java -cp ./bin/com/ikhokha/techcheck/ Main
