@@ -29,7 +29,8 @@ jobs:
       - name: Setup Java JDK
         uses: actions/setup-java@v2.3.1
         with:
-          java-version: 11
+          java-version: '11'
+          distribution: 'zulu'
 
       # Runs a single command using the runners shell
       - name: Run a one-line script
