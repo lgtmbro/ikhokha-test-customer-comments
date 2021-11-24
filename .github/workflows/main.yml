@@ -36,4 +36,6 @@ jobs:
         run: javac ./src/com/ikhokha/techcheck/*.java -d bin
 
       - name: Run Reports
-        run: java -cp ./bin/com/ikhokha/techcheck/ Main
+        run: java -cp ./bin com.ikhokha.techcheck.Main \
+          --threads 5 \
+          --keywords mover,shaker,loadshedding,#winWithShaker
